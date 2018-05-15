@@ -102,6 +102,11 @@ module.exports = {
     ]
   },
 
+  optimization: {
+    splitChunks: {
+      name: 'common'
+    }
+  },
 
   plugins: [
 
@@ -110,6 +115,7 @@ module.exports = {
       jQuery: "jquery"
     }),
 
+    /*
     // 定义环境变量
     new webpack.DefinePlugin({
       // 是否是生产环境
@@ -121,6 +127,7 @@ module.exports = {
       // 是否是开发环境
       '__DEV__': JSON.stringify(process.env.NODE_ENV == 'development')
     }),
+    */
 
     // 清空打包目录
     new CleanWebpackPlugin(['dist'], {
@@ -131,10 +138,12 @@ module.exports = {
 
     extractSass,
 
+    /*
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
       filename: 'common.[hash].bundle.js'
     }),
+
 
     new webpack.optimize.UglifyJsPlugin({
       output: {
@@ -145,6 +154,7 @@ module.exports = {
         warnings: false
       }
     }),
+    */
 
     new HtmlwebpackPlugin({
       filename: path.resolve(__dirname, 'dist/index.ejs'),

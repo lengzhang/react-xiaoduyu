@@ -7,8 +7,8 @@
     "pro": "NODE_ENV=production __NODE__=false BABEL_ENV=client webpack --progress --colors --config webpack.production.config.js && NODE_ENV=production __NODE__=true BABEL_ENV=server node src/server",
     "dist": "NODE_ENV=production __NODE__=false BABEL_ENV=client webpack --progress --colors --config webpack.production.config.js",
     "server": "NODE_ENV=production __NODE__=true BABEL_ENV=server node src/server",
-    "dev1": "BABEL_ENV=server webpack --progress --colors --config webpack.development.config.js --mode=development && NODE_ENV=development __NODE__=true BABEL_ENV=server node src/server",
-    "pro1": "BABEL_ENV=client webpack --progress --colors --config webpack.production.config.js --mode=production && NODE_ENV=production __NODE__=true BABEL_ENV=server node src/server"
+    "dev1": "BABEL_ENV=server webpack --progress --colors --config webpack.development.config.js && NODE_ENV=development __NODE__=true BABEL_ENV=server node src/server",
+    "pro1": "BABEL_ENV=client webpack --progress --colors --config webpack.production.config.js && NODE_ENV=production __NODE__=true BABEL_ENV=server node src/server"
   },
   "engines": {
     "node": ">=8.6.0"
@@ -38,7 +38,8 @@
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "webpack": "^4.8.3"
   },
   "devDependencies": {
     "autoprefixer": "^8.4.1",
@@ -53,7 +54,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "clean-webpack-plugin": "^0.1.17",
     "css-loader": "^0.28.7",
-    "extract-text-webpack-plugin": "^3.0.2",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
     "postcss-loader": "^2.1.4",
@@ -64,7 +65,7 @@
     "serviceworker-webpack-plugin": "^0.2.3",
     "style-loader": "^0.19.1",
     "url-loader": "^0.6.2",
-    "webpack": "^3.10.0",
+    "webpack-cli": "^2.1.3",
     "webpack-dev-server": "^3.1.0",
     "webpack-hot-middleware": "^2.21.1"
   }

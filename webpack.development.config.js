@@ -9,11 +9,13 @@ const config = require('./config');
 
 const extractSass = new ExtractTextPlugin({
   filename: "[name].css",
-  disable: true,
+  // disable: true,
   allChunks: true
 })
 
 module.exports = {
+
+  mode: 'development',
 
   devtool: 'source-map',
 
@@ -21,8 +23,8 @@ module.exports = {
     app: [
       'babel-polyfill',
       'bootstrap/dist/css/bootstrap.min.css',
-      './src/client/index',
-      'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
+      './src/client/index'
+      // 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
     ],
     // 一些主要依赖打包在一起
     vendors: [
@@ -128,6 +130,12 @@ module.exports = {
     ]
   },
 
+  optimization: {
+    splitChunks: {
+      name: 'common'
+    }
+  },
+
   plugins: [
 
     // require('precss'),
@@ -138,6 +146,8 @@ module.exports = {
       jQuery: "jquery"
     }),
 
+
+    /*
     // 定义环境变量
     new webpack.DefinePlugin({
       // 是否是生产环境
@@ -149,13 +159,14 @@ module.exports = {
       // 是否是开发环境
       '__DEV__': JSON.stringify(process.env.NODE_ENV == 'development')
     }),
+    */
 
     extractSass,
 
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common',
-      filename: 'common.bundle.js'
-    }),
+    // new webpack.optimize.CommonsChunkPlugin({
+    //   name: 'common',
+    //   filename: 'common.bundle.js'
+    // }),
 
     new HtmlwebpackPlugin({
       filename: path.resolve(__dirname, 'dist/index.ejs'),
@@ -165,10 +176,10 @@ module.exports = {
       reduxState: '<%- reduxState %>'
     }),
 
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.NamedModulesPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
+    // new webpack.optimize.OccurrenceOrderPlugin(),
+    // new webpack.NamedModulesPlugin(),
+    // new webpack.HotModuleReplacementPlugin(),
+    // new webpack.NoEmitOnErrorsPlugin()
 
     // new ServiceWorkerWebpackPlugin({
     //   entry: path.join(__dirname, 'client/sw.js'),
