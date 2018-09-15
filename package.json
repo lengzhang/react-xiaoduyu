@@ -20,7 +20,6 @@
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-polyfill": "^6.26.0",
     "body-parser": "^1.18.2",
-    "bootstrap": "^4.0.0",
     "compression": "^1.7.1",
     "cookie-parser": "^1.4.3",
     "css-modules-require-hook": "^4.2.3",

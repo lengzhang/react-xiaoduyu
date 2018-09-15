@@ -20,7 +20,6 @@ module.exports = {
   entry: {
     app: [
       'babel-polyfill',
-      'bootstrap/dist/css/bootstrap.min.css',
       './src/client/index',
       'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
     ],
@@ -34,8 +33,7 @@ module.exports = {
       'react-document-meta',
       'axios',
       'jquery',
-      'popper.js',
-      'bootstrap/dist/js/bootstrap.min.js'
+      'popper.js'
     ]
   },
 

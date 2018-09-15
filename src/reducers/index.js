@@ -3,11 +3,9 @@ import { combineReducers } from 'redux';
 import merge from 'lodash/merge';
 
 import user from './user';
-import posts from './posts';
 
 let states = {
-  user,
-  posts
+    user
 }
 
 // 创建一个无数据的states，用于在服务端初始redux数据

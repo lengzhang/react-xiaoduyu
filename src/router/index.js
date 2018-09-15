@@ -12,7 +12,7 @@ import Head from '../components/head';
  * @param  {Object} userinfo 用户信息，以此判断用户是否是登录状态，并控制页面访问权限
  * @return {[type]}
  */
-export default (user) => {
+export default (user = null) => {
 
   // 登录用户才能访问
   const requireAuth = (Layout, props) => {
@@ -47,39 +47,8 @@ export default (user) => {
       component: asyncRouteComponent({
         loader: () => import('../pages/home')
       }),
-      enter: requireAuth
+      enter: triggerEnter
     },
-
-    {
-      path: '/posts/:id',
-      exact: true,
-      head: Head,
-      component: asyncRouteComponent({
-        loader: () => import('../pages/posts-detail')
-      }),
-      enter: requireAuth
-    },
-
-    {
-      path: '/topics',
-      exact: true,
-      head: Head,
-      component: asyncRouteComponent({
-        loader: () => import('../pages/topics')
-      }),
-      enter: requireAuth
-    },
-
-    {
-      path: '/sign-in',
-      exact: true,
-      // head: Head,
-      component: asyncRouteComponent({
-        loader: () => import('../pages/sign-in')
-      }),
-      enter: requireTourists
-    },
-
     {
       path: '**',
       head: Head,

@@ -18,11 +18,10 @@ import configureStore from '../store';
 import createRouter from '../router';
 // 路由初始化的redux内容
 import { initialStateJSON } from '../reducers';
-import { saveAccessToken, saveUserInfo } from '../actions/user';
 
 // 配置
 import { port, auth_cookie_name } from '../../config';
-import sign from './sign';
+
 import webpackHotMiddleware from './webpack-hot-middleware';
 
 const app = express();
@@ -40,31 +39,11 @@ app.use(cookieParser());
 app.use(compress());
 app.use(express.static(__dirname + '/../../dist'));
 
-
-
-// 登录、退出
-app.use('/sign', sign());
-
 app.get('*', async (req, res) => {
 
   const store = configureStore(JSON.parse(initialStateJSON));
 
-  let user = null;
-  let accessToken = req.cookies[auth_cookie_name] || '';
-
-  // 验证 token 是否有效
-  if (accessToken) {
-    // 这里可以去查询 accessToken 是否有效
-    // your code
-    // 这里假设如果有 accessToken ，那么就是登录用户，将他保存到redux中
-    user = { id: '001', nickname: accessToken };
-    // 储存用户信息
-    store.dispatch(saveUserInfo({ userinfo: user }));
-    // 储存access token
-    store.dispatch(saveAccessToken({ accessToken }));
-  }
-
-  const router = createRouter(user);
+  const router = createRouter();
 
   let _route = null,
       _match = null;

@@ -20,14 +20,6 @@ import '../pages/global.scss';
 // 从页面中获取服务端生产redux数据，作为客户端redux初始值
 const store = configureStore(window.__initState__);
 
-import { getUserInfo } from '../reducers/user';
-
-let userinfo = getUserInfo(store.getState());
-
-if (!userinfo || !userinfo.id) {
-  userinfo = null;
-}
-
 const RouterDom = createRouter(userinfo).dom;
 
 ReactDOM.hydrate((

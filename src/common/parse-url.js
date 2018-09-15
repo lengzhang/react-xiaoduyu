@@ -1,4 +1,3 @@
-
 const parseUrl = (search) => {
   const paramPart = search.substr(1).split('&');
   return paramPart.reduce(function(res, item) {
