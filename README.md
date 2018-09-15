@@ -1,4 +1,4 @@
-# ⚛️ React 同构脚手架
+# ⚛️ React 同构脚手架 (Clean Up)
 Web前端世界日新月异变化太快，为了让自己跟上节奏不掉队，总结出了自己的一套React脚手架，方便日后新项目可以基于此快速上手开发。
 
 ## 特点
@@ -47,9 +47,9 @@ npm run server
 2、打包文件，除了index.ejs是服务端渲染的模版文件，其他都是客户端使用的文件
 
 ```
-npm run dist 
+npm run dist
 ```
-  
+
 3、将项目上传至你的服务器  
 4、启动服务  
 
@@ -85,4 +85,3 @@ NODE_ENV=production __NODE__=true BABEL_ENV=server pm2 start src/server --name "
 ├── webpack.development.config.js       # 开发环境的webpack配置项
 └── webpack.profuction.config.js        # 生产环境的wbepakc配置项
 ```
-

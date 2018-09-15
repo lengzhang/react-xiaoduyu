@@ -30,10 +30,7 @@ module.exports = {
       'react-router',
       'redux',
       'react-redux',
-      'react-document-meta',
-      'axios',
-      'jquery',
-      'popper.js'
+      'react-document-meta'
     ]
   },
 
@@ -130,11 +127,6 @@ module.exports = {
 
     // require('precss'),
     // require('autoprefixer'),
-
-    new webpack.ProvidePlugin({
-      $: "jquery",
-      jQuery: "jquery"
-    }),
 
     // 定义环境变量
     new webpack.DefinePlugin({

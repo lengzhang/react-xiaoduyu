@@ -16,7 +16,6 @@
   "author": "sword <54sword@163.com>",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.18.0",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-polyfill": "^6.26.0",
     "body-parser": "^1.18.2",
@@ -25,10 +24,8 @@
     "css-modules-require-hook": "^4.2.3",
     "ejs": "^2.5.7",
     "express": "^4.16.2",
-    "jquery": "^3.3.1",
     "lodash": "^4.17.4",
     "node-sass": "^4.7.2",
-    "popper.js": "^1.12.9",
     "react": "^16.2.0",
     "react-document-meta": "^2.1.2",
     "react-dom": "^16.2.0",
