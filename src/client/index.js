@@ -20,7 +20,7 @@ import '../pages/global.scss';
 // 从页面中获取服务端生产redux数据，作为客户端redux初始值
 const store = configureStore(window.__initState__);
 
-const RouterDom = createRouter(userinfo).dom;
+const RouterDom = createRouter(null).dom;
 
 ReactDOM.hydrate((
   <Provider store={store}>
