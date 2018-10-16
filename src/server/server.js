@@ -11,6 +11,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter, matchPath } from 'react-router';
 import { Provider } from 'react-redux';
+// Provider 内的所有子组件都默认可以拿到 state
 
 // 路由配置
 import configureStore from '../store';
@@ -23,6 +24,9 @@ import { initialStateJSON } from '../reducers';
 import { port, auth_cookie_name } from '../../config';
 
 import webpackHotMiddleware from './webpack-hot-middleware';
+
+// actions
+import {loadUserInfo, addAccessToken} from '../actions/user';
 
 const app = express();
 
@@ -39,78 +43,97 @@ app.use(cookieParser());
 app.use(compress());
 app.use(express.static(__dirname + '/../../dist'));
 
+// 登录、退出
+import sign from './sign';
+app.use('/sign', sign());
+
 app.get('*', async (req, res) => {
 
-  const store = configureStore(JSON.parse(initialStateJSON));
+    const store = configureStore(JSON.parse(initialStateJSON));
 
-  const router = createRouter();
+    let user = null,
+        err,
+        accessToken = req.cookies[auth_cookie_name] || '';
 
-  let _route = null,
-      _match = null;
+    // 验证 token 是否有效
+    if (accessToken) {
+        [err, user] = await loadUserInfo({accessToken})(store.dispatch, store.getState);
 
-  router.list.some(route => {
-    let match = matchPath(req.url.split('?')[0], route);
-    if (match && match.path) {
-      _route = route;
-      _match = match;
-      return true;
+        // 如果是拉黑的用户，阻止登陆，并提示
+        if (err && err.blocked) {
+            res.clearCookie(auth_cookie_name);
+            res.redirect('/notice?notice=block_account');
+            return;
+        }
+
+        // 为 store 发出一个名为 addAccessToken 的 Action
+        if (user) store.dispatch(addAccessToken({accessToken}));
     }
-  })
 
-  /*
+    const router = createRouter(user);
+
+    let _route = null,
+        _match = null;
+
+    router.list.some(route => {
+        let match = matchPath(req.url.split('?')[0], route);
+        if (match && match.path) {
+            _route = route;
+            _match = match;
+            return true;
+        }
+    })
+
+    /*
   let context = {};
 
   // 加载页面分片
   context = await _route.component.load({ store, match: _match });
   */
 
-  let context = {
-    // code
-    // url
-  };
+    let context = {
+        // code
+        // url
+    };
 
-  // 加载异步路由组件
-  const loadAsyncRouterComponent = () => {
-    return new Promise(async (resolve) => {
-      await _route.component.load(async (ResolvedComponent)=>{
-        let loadData = ResolvedComponent.WrappedComponent.defaultProps.loadData;
-        let result = await loadData({ store, match: _match });
-        resolve(result);
-      });
-    });
-  }
+    // 加载异步路由组件
+    const loadAsyncRouterComponent = () => {
+        return new Promise(async (resolve) => {
+            await _route.component.load(async (ResolvedComponent) => {
+                let loadData = ResolvedComponent.WrappedComponent.defaultProps.loadData;
+                let result = await loadData({store, match: _match});
+                resolve(result);
+            });
+        });
+    }
 
-  if (_route.component.load) {
-    // 在服务端加载异步组件
-    context = await loadAsyncRouterComponent();
-  }
+    if (_route.component.load) {
+        // 在服务端加载异步组件
+        context = await loadAsyncRouterComponent();
+    }
 
-  // 获取路由dom
-  const _Router = router.dom;
+    // 获取路由dom
+    const _Router = router.dom;
 
-  let html = ReactDOMServer.renderToString(
-    <Provider store={store}>
-      <StaticRouter location={req.url} context={context}>
-        <_Router />
-      </StaticRouter>
-    </Provider>
-  );
+    let html = ReactDOMServer.renderToString(<Provider store={store}>
+        <StaticRouter location={req.url} context={context}>
+            <_Router/>
+        </StaticRouter>
+    </Provider>);
 
-  let reduxState = JSON.stringify(store.getState()).replace(/</g, '\\x3c');
+    let reduxState = JSON.stringify(store.getState()).replace(/</g, '\\x3c');
 
-  // 获取页面的meta，嵌套到模版中
-  let meta = DocumentMeta.renderAsHTML();
+    // 获取页面的meta，嵌套到模版中
+    let meta = DocumentMeta.renderAsHTML();
 
-  if (context.code == 301) {
-    res.writeHead(301, {
-      Location: context.url
-    });
-  } else {
-    res.status(context.code);
-    res.render('../dist/index.ejs', { html, reduxState, meta });
-  }
+    if (context.code == 301) {
+        res.writeHead(301, {Location: context.url});
+    } else {
+        res.status(context.code);
+        res.render('../dist/index.ejs', {html, reduxState, meta});
+    }
 
-  res.end();
+    res.end();
 
 });
 

@@ -1,12 +1,27 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="utf-8" /><%= htmlWebpackPlugin.options.headMeta %>
+    <meta charset="utf-8" />
+
+    <!-- 自定义 head -->
+    <%= htmlWebpackPlugin.options.head %>
+    <!-- Material UI: Roboto Font & Font Icons -->
+    <%= htmlWebpackPlugin.options.material_ui_head %>
+    <!-- Font Awesome -->
+    <%= htmlWebpackPlugin.options.font_awesome_head %>
+
+    <!-- 自定义 meta -->
+    <%= htmlWebpackPlugin.options.meta %>
 </head>
+
 <body>
-  <div id="app"><%= htmlWebpackPlugin.options.htmlDom %></div>
-  <script>
-    window.__initState__ = <%= htmlWebpackPlugin.options.reduxState %>
-  </script>
+    <div id="app">
+        <%= htmlWebpackPlugin.options.htmlDom %>
+    </div>
+    <script>
+        window.__initState__ = <%= htmlWebpackPlugin.options.reduxState %>
+    </script>
 </body>
+
 </html>
