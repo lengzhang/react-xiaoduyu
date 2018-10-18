@@ -141,6 +141,9 @@ export class Head extends React.Component {
 
         const navItemsArr = [
             {
+                path: '/follow',
+                title: '关注'
+            }, {
                 path: '/',
                 title: '发现'
             }, {

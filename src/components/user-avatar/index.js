@@ -16,6 +16,7 @@ import classNames from 'classnames';
 import {withStyles} from '@material-ui/core/styles';
 
 import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import MenuList from '@material-ui/core/MenuList';
@@ -32,8 +33,6 @@ const materialStyles = theme => ({
     },
     avatar: {
         magin: theme.spacing.unit,
-        width: theme.spacing.unit*5,
-        height: theme.spacing.unit*5,
     },
 });
 
@@ -102,24 +101,32 @@ export class UserAvatar extends React.Component {
 
         return (
             <div>
-                <IconButton
-                    color='primary'
-                    aria-label='User'
-                    onClick={this.userButtonClick}
-                    buttonRef={(node)=>{this.anchorEl = node;}}
-                    >
-                    {
-                        userProfile
-                        ?
+                {
+                    userProfile
+                    ?
+                    <IconButton
+                        color='primary'
+                        aria-label='User'
+                        onClick={this.userButtonClick}
+                        buttonRef={(node)=>{this.anchorEl = node;}}
+                        >
                         <Avatar
                             className={classes.avatar}
                             alt={userProfile.nickname}
                             src={userProfile.avatar_url}
                             />
-                        :
+                    </IconButton>
+                    :
+                    <IconButton
+                        color='primary'
+                        aria-label='User'
+                        onClick={this.userButtonClick}
+                        buttonRef={(node)=>{this.anchorEl = node;}}
+                        >
                         <Icon className='far fa-user' />
-                    }
-                </IconButton>
+                    </IconButton>
+                }
+
                 <Popover
                     open={menuOpen}
                     anchorEl={this.anchorEl}

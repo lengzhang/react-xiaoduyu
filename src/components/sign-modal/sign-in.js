@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Device from '../../common/device';
+
 import classNames from 'classnames';
 
 // material-ui
@@ -15,7 +17,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
 import CloseIcon from '@material-ui/icons/Close';
 
 import TextField from '@material-ui/core/TextField';
@@ -26,10 +27,13 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 const materialStyles = theme => ({
     card: {
         width: '100%',
-        maxWidth: theme.spacing.unit * 50,
+        maxWidth: theme.spacing.unit * 60,
         [theme.breakpoints.down('xs')]: {
             maxWidth: theme.spacing.unit * 40,
         }
+    },
+    switchButton: {
+        marginLeft: theme.spacing.unit,
     },
 });
 
@@ -43,13 +47,12 @@ export class SignInCard extends React.Component {
         signIn: PropTypes.func.isRequired,
         captcha: PropTypes.object,
         getCaptcha: PropTypes.func.isRequired,
-        errorOpen: PropTypes.func.isRequired,
+        msgOpen: PropTypes.func.isRequired,
     }
 
     constructor(props) {
         super(props);
-        this.state = {
-            account: {
+        this.state = {account: {
                 value: '',
                 error: false,
                 helperText: '',
@@ -95,61 +98,59 @@ export class SignInCard extends React.Component {
         })
     }
 
+    handleErrorTextField = (name, error, helperText) => {
+        this.setState({
+            [name]: Object.assign({}, this.state[name], {
+                error,
+                helperText
+            }),
+        })
+    }
+
+    checkTextField = (name, helperText = '') => {
+        const item = this.state[name];
+        let newItem = {}
+        if (item.value === '' && !item.error) {
+            this.handleErrorTextField(name, true, helperText);
+        }
+        else if (item.value != '' && item.error) {
+            this.handleErrorTextField(name, false, '');
+        }
+    }
+
+    checkAccountFormat = (str) => {
+
+        // Check Email Format
+        let regExp = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+        if (regExp.test(str)) {
+            this.handleErrorTextField('account', false, '');
+            return true;
+        }
+
+        // Check Phone Format
+        regExp = /\d+$/;
+        if (regExp.test(str)) {
+            this.handleErrorTextField('account', false, '');
+            return true;
+        }
+        this.handleErrorTextField('account', true, '手机号码或邮箱地址格式不正确, 请重新输入');
+        return false;
+    }
+
     signin = async (event) => {
         const { account, password, captchaState } = this.state;
         const { captcha } = this.props;
-        let newAccount = {}, newPassword = {}, newCaptcha = {};
-        if (account.value === '' && !account.error) {
-            newAccount = {
-                error: true,
-                helperText: '请输入手机号或邮箱',
-            }
-        }
-        else if (account.value != '' && account.error) {
-            newAccount = {
-                error: false,
-                helperText: '',
-            }
-        }
-        if (password.value === '' && !password.error) {
-            newPassword = {
-                error: true,
-                helperText: '请输入密码',
-            }
-        }
-        else if (password.value != '' && password.error) {
-            newPassword = {
-                error: false,
-                helperText: '',
-            }
-        }
-        if (captcha && captchaState.value === '' && !captchaState.error) {
-            newCaptcha = {
-                error: true,
-                helperText: '请输入验证码',
-            }
-        }
-        else if (captcha && captchaState.value != '' && captchaState.error) {
-            newCaptcha = {
-                error: false,
-                helperText: '',
-            }
-        }
-        if (Object.keys(newAccount).length > 0 || Object.keys(newPassword).length > 0 || Object.keys(captchaState).length > 0) {
-            this.setState({
-                account: Object.assign({}, this.state.account, newAccount),
-                password: Object.assign({}, this.state.password, newPassword),
-                captchaState: Object.assign({}, this.state.captchaState, newCaptcha),
-                //signInButton: assign(this.state.signInButton, {name: '登录中...', disabled: true})
-            })
-        }
 
-        if (account.value === '' || password.value === '' || (captcha && captchaState.value === '')) return;
+        this.checkTextField('account', '请输入手机号码或邮箱');
+        this.checkTextField('password', '请输入密码');
+        if (captcha) this.checkTextField('captchaState', '请输入验证码');
 
-        console.log('account', account);
-        console.log('password', password);
-        console.log('captchaState', captchaState);
-        console.log('captcha', captcha);
+        if (
+            account.value === ''
+            || (account.value != '' && !this.checkAccountFormat(account.value))
+            || password.value === ''
+            || (captcha && captchaState.value === '')
+        ) return;
 
         let data = {
             password: password.value
@@ -163,21 +164,64 @@ export class SignInCard extends React.Component {
             data.captcha = captchaState.value;
             data.captcha_id = captcha._id;
         }
+
+        this.setState({
+            account: Object.assign({}, this.state.account, {disabled: true}),
+            password: Object.assign({}, this.state.password, {disabled: true}),
+            captchaState: Object.assign({}, this.state.captchaState, {disabled: true}),
+            signInButton: Object.assign({}, this.state.signInButton, {name: '登录中...', disabled: true}),
+        })
+
         let [ err, result ] = await this.props.signIn({data});
-        console.log('data', data);
-        console.log(err, result);
+
         if (err) {
             this.setState({
-                password: Object.assign({}, this.state.password, {value: ''}),
+                account: Object.assign({}, this.state.account, {disabled: false}),
+                password: Object.assign({}, this.state.password, {value: '', disabled: false}),
+                captchaState: Object.assign({}, this.state.captchaState, {disabled: false}),
+                signInButton: Object.assign({}, this.state.signInButton, {name: '登录', disabled: false})
             })
-            this.props.errorOpen(err);
+            this.props.msgOpen({msg: err, type: 'error'});
             this.props.getCaptcha();
+        }
+        else {
+            this.setState({
+                signInButton: Object.assign(this.state.signInButton, {name: '登录成功'})
+            })
         }
     }
 
     render() {
         const { classes, handleModalClose, switchModal, captcha, getCaptcha } = this.props;
-        const { account, password, captchaState, signInButton} = this.state;
+        const { account, password, captchaState, signInButton } = this.state;
+
+        const textField = ({name, type = 'text', label, placeholder, InputProps = {}}) => {
+            const item = this.state[name];
+            return (
+                <Grid item>
+                    <TextField
+                        id={name}
+                        type={type}
+                        label={label}
+                        placeholder={placeholder}
+                        value={item.value}
+                        onChange={this.handleTextChange(name)}
+                        onKeyUp={this.handleKeyUp}
+                        error={item.error}
+                        helperText={item.helperText}
+                        disabled={item.disabled}
+                        margin='dense'
+                        variant="outlined"
+                        fullWidth
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        InputProps={InputProps}
+                        />
+                </Grid>
+            )
+        }
+
         return (
             <Card className={classes.card}>
                 <CardHeader
@@ -191,89 +235,44 @@ export class SignInCard extends React.Component {
                 <Divider />
                 <CardContent>
                     <Grid container direction='column' spacing={8}>
-                        <Grid item>
-                            <TextField
-                                id='account'
-                                type='email'
-                                label='手机号或邮箱'
-                                placeholder='请输入手机号码或者邮箱地址'
-                                value={account.value}
-                                onChange={this.handleTextChange('account')}
-                                onKeyUp={this.handleKeyUp}
-                                error={account.error}
-                                helperText={account.helperText}
-                                disabled={account.disabled}
-                                margin='dense'
-                                variant="outlined"
-                                fullWidth
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                />
-                        </Grid>
-                        <Grid item>
-                            <TextField
-                                id='password'
-                                type={password.showPassword ? 'text' : 'password'}
-                                label='密码'
-                                placeholder='请输入密码'
-                                value={password.value}
-                                onChange={this.handleTextChange('password')}
-                                onKeyUp={this.handleKeyUp}
-                                error={password.error}
-                                helperText={password.helperText}
-                                disabled={password.disabled}
-                                margin='dense'
-                                variant="outlined"
-                                fullWidth
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                              aria-label="Toggle password visibility"
-                                              onClick={this.handleToggleShowPassword}
-                                            >
-                                                {password.showPassword ? <VisibilityOff /> : <Visibility />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    )
-                                }}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                />
-                        </Grid>
+                        {textField({
+                            name: 'account',
+                            type: 'email',
+                            label: '手机号码或邮箱',
+                            placeholder: '请输入手机号码或邮箱地址',
+                        })}
+                        {textField({
+                            name: 'password',
+                            type: password.showPassword ? 'text' : 'password',
+                            label: '密码',
+                            placeholder: '请输入密码',
+                            InputProps: {
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                          aria-label="Toggle password visibility"
+                                          onClick={this.handleToggleShowPassword}
+                                        >
+                                            {password.showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                )
+                            },
+                        })}
                         {
                             captcha
                             ?
                             <Grid item>
                                 <Grid container spacing={8} alignItems="center">
-                                    <Grid item>
-                                        <TextField
-                                            id='captcha'
-                                            type='text'
-                                            label='验证码'
-                                            placeholder='请输入验证码'
-                                            value={captchaState.value}
-                                            onChange={this.handleTextChange('captchaState')}
-                                            onKeyUp={this.handleKeyUp}
-                                            error={captchaState.error}
-                                            helperText={captchaState.helperText}
-                                            disabled={captchaState.disabled}
-                                            margin='dense'
-                                            variant="outlined"
-                                            fullWidth
-                                            InputLabelProps={{
-                                                shrink: true,
-                                            }}
-                                            />
-                                    </Grid>
+                                    {textField({
+                                        name: 'captchaState',
+                                        label: '验证码',
+                                        placeholder: '请输入验证码',
+                                    })}
                                     <Grid item>
                                         <img src={captcha.url} onClick={getCaptcha}></img>
                                     </Grid>
                                 </Grid>
-
-
                             </Grid>
                             :
                             null
@@ -293,7 +292,9 @@ export class SignInCard extends React.Component {
                 </CardContent>
                 <Divider />
                 <CardContent>
-                    没有账号? <Button
+                    没有账号?
+                    <Button
+                        className={classes.switchButton}
                         variant="contained"
                         color="primary"
                         onClick={switchModal}

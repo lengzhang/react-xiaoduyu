@@ -5,9 +5,10 @@ import PropTypes from 'prop-types';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
-import { signIn } from '../../actions/sign';
+import { signIn, signUp } from '../../actions/sign';
 import { getCaptchaById } from '../../reducers/captcha';
 import { addCaptcha } from '../../actions/captcha';
+import { loadCountries } from '../../actions/countries';
 
 import classNames from 'classnames';
 
@@ -51,6 +52,7 @@ const materialStyles = theme => ({
     }),
     (dispatch) => ({
         signIn: bindActionCreators(signIn, dispatch),
+        signUp: bindActionCreators(signUp, dispatch),
         addCaptcha: ()=>{
             return bindActionCreators(addCaptcha, dispatch)({
                 id: 'sign-in',
@@ -64,6 +66,7 @@ const materialStyles = theme => ({
                 `
             })
         },
+        loadCountries: bindActionCreators(loadCountries, dispatch),
     })
 )
 @withStyles(materialStyles)
@@ -80,31 +83,42 @@ export class SignModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            errorOpen: false,
-            errorMsg: 'Error Bar',
+            msgType: 'info',
+            msgOpen: false,
+            msg: 'Message Bar',
+            msgAutoHideDuration: 5000,
         }
+    }
+
+    componentDidMount() {
+        this.props.loadCountries();
     }
 
     getCaptcha = () => {
         this.props.addCaptcha();
     }
 
-    errorOpen = (msg) => {
+    msgOpen = ({msg, type = 'info', duration = 5000}) => {
         this.setState({
-            errorOpen: true,
-            errorMsg: msg,
+            msgType: type,
+            msgOpen: true,
+            msg,
+            msgAutoHideDuration: duration,
         })
     }
 
-    errorClose = () => {
+    msgClose = () => {
         this.setState({
-            errorOpen: false,
+            msgType: 'info',
+            msgOpen: false,
+            msg: 'Message Bar',
+            msgAutoHideDuration: 5000,
         })
     }
 
     render() {
-        const { classes, modalType, modalOpen, handleModalClose, switchModal, signIn, captcha } = this.props;
-        const { errorOpen, errorMsg } = this.state;
+        const { classes, modalType, modalOpen, handleModalClose, switchModal, signIn, signUp, captcha } = this.props;
+        const { msgType, msgOpen, msg } = this.state;
         return (
             <div>
                 <Modal open={modalOpen} >
@@ -118,26 +132,27 @@ export class SignModal extends React.Component {
                                 signIn={signIn}
                                 captcha={captcha}
                                 getCaptcha={this.getCaptcha}
-                                errorOpen={this.errorOpen}
+                                msgOpen={this.msgOpen}
                                 />
                             :
                             <SignUpCard
                                 handleModalClose={handleModalClose}
                                 switchModal={switchModal}
                                 signIn={signIn}
-                                captcha={captcha}
+                                signUp={signUp}
+                                captchaState={captcha}
                                 getCaptcha={this.getCaptcha}
-                                errorOpen={this.errorOpen}
+                                msgOpen={this.msgOpen}
                                 />
                         }
                         <MessageBar
-                            open={errorOpen}
-                            message={errorMsg}
-                            onClose={this.errorClose}
+                            open={msgOpen}
+                            message={msg}
+                            onClose={this.msgClose}
                             vertical='top'
                             horizontal='right'
                             autoHideDuration={5000}
-                            variant='error'
+                            variant={msgType}
                             />
                     </div>
                 </Modal>
@@ -145,5 +160,29 @@ export class SignModal extends React.Component {
         )
     }
 }
+
+/*
+{
+    modalType === 'sign-in'
+    ?
+    <SignInCard
+        handleModalClose={handleModalClose}
+        switchModal={switchModal}
+        signIn={signIn}
+        captcha={captcha}
+        getCaptcha={this.getCaptcha}
+        errorOpen={this.errorOpen}
+        />
+    :
+    <SignUpCard
+        handleModalClose={handleModalClose}
+        switchModal={switchModal}
+        signUp={signUp}
+        captcha={captcha}
+        getCaptcha={this.getCaptcha}
+        errorOpen={this.errorOpen}
+        />
+}
+*/
 
 export default SignModal;
