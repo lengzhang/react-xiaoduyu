@@ -81,7 +81,7 @@ export class PostsList extends React.Component {
                     {
                         postsList.data.map((item, index) => (
                             <Grid item key={index}>
-                                <PostsListItem post={item} />
+                                <PostsListItem posts={item} />
                             </Grid>
                         ))
                     }

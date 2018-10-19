@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import LikeButton from '../../like-button';
+import FollowButton from '../../follow-button';
 
 // material-ui
 import {withStyles} from '@material-ui/core/styles';
@@ -27,8 +28,7 @@ const materialStyles = theme => ({
         'padding-bottom': 0,
     },
     cardActions: {
-        padding: 0,
-        paddingTop: theme.spacing.unit*2,
+        padding: theme.spacing.unit,
         paddingLeft: theme.spacing.unit*3,
         paddingRight: theme.spacing.unit*3,
     },
@@ -39,7 +39,7 @@ export class PostsListItem extends React.Component {
 
     static propTypes = {
         classes: PropTypes.object.isRequired,
-        post: PropTypes.object.isRequired,
+        posts: PropTypes.object.isRequired,
     }
 
     static defaultProps = {
@@ -51,48 +51,51 @@ export class PostsListItem extends React.Component {
     }
 
     render() {
-        const { classes, post } = this.props;
+        const { classes, posts } = this.props;
 
         return (
             <Card className={classes.card}>
                 <CardHeader
                     avatar={
                         <Avatar
-                            alt={post.user_id.nickname}
-                            src={post.user_id.avatar_url}
+                            alt={posts.user_id.nickname}
+                            src={posts.user_id.avatar_url}
                             />
                     }
                     title={
                         <Grid container direction="row" justify='space-between'>
-                            <Grid item><h3>{post.user_id.nickname}</h3></Grid>
-                            <Grid item><p>{post._create_at}</p></Grid>
+                            <Grid item><h3>{posts.user_id.nickname}</h3></Grid>
+                            <Grid item><p>{posts._create_at}</p></Grid>
                         </Grid>
                     }
                     subheader={
                         <Grid container spacing={24} justify='space-between'>
-                            <Grid item>{post.topic_id.name}</Grid>
+                            <Grid item>{posts.topic_id.name}</Grid>
                             <Grid item>
                                 <Grid container spacing={8} justify='flex-end'>
-                                    {post.view_count > 0 ? <Grid item>{post.view_count} 次浏览</Grid> : ''}
-                                    {post.view_count > 0 && post.like_count > 0 ? <Grid item>•</Grid> : ''}
-                                    {post.view_count > 0 && post.like_count > 0 ? <Grid item>{post.like_count} 个赞</Grid> : ''}
-                                    {post.view_count > 0 && post.like_count > 0 && post.follow_count > 0 ? <Grid item>•</Grid> : ''}
-                                    {post.view_count > 0 && post.like_count > 0 && post.follow_count > 0 ? <Grid item>{post.follow_count} 人关注</Grid> : ''}
+                                    {posts.view_count > 0 ? <Grid item>{posts.view_count} 次浏览</Grid> : ''}
+                                    {posts.view_count > 0 && posts.like_count > 0 ? <Grid item>•</Grid> : ''}
+                                    {posts.view_count > 0 && posts.like_count > 0 ? <Grid item>{posts.like_count} 个赞</Grid> : ''}
+                                    {posts.view_count > 0 && posts.like_count > 0 && posts.follow_count > 0 ? <Grid item>•</Grid> : ''}
+                                    {posts.view_count > 0 && posts.like_count > 0 && posts.follow_count > 0 ? <Grid item>{posts.follow_count} 人关注</Grid> : ''}
                                 </Grid>
                             </Grid>
                         </Grid>
                     }
                     />
                 <CardContent className={classes.cardContent}>
-                    <Link to={`/posts/${post._id}`}>
-                        <Grid container direction='column'>
-                            <Grid item>{post.title}</Grid>
-                            <Grid item>{post.content_summary}</Grid>
+                    <Link to={`/posts/${posts._id}`}>
+                        <Grid container spacing={8} direction='column' justify='space-between'>
+                            <Grid item><h3>{posts.title}</h3></Grid>
+                            <Grid item><p>{posts.content_summary}</p></Grid>
                         </Grid>
                     </Link>
                 </CardContent>
                 <CardActions className={classes.cardActions}>
-                    <LikeButton post={post} />
+                    <Grid container spacing={8} direction='row' justify='flex-end'>
+                        <Grid item><LikeButton posts={posts} /></Grid>
+                        <Grid item><FollowButton posts={posts} /></Grid>
+                    </Grid>
                 </CardActions>
             </Card>
         )
