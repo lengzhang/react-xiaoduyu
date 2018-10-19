@@ -16,6 +16,9 @@ import '../vendors/web-picture-viewer.js';
 // ArriveFooter 监听抵达页尾的事件
 import '../vendors/arrive-footer.js';
 
+// ScrollListener 监听 scoll 的事件
+import '../vendors/scroll-listener.js';
+
 /**
  * 懒加载图片、Dom
  * 使用方式

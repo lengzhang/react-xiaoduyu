@@ -72,7 +72,7 @@ export function loadPostsList({ id, args, restart = false }) {
 
             reducerName: 'posts',
             name: id,
-            actionType: 'SET_POSTS_LIST',
+            actionType: 'SET_POSTS_LIST_BY_NAME',
             restart,
             args,
             fields,

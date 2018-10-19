@@ -19,18 +19,17 @@
         let scrollTop = document.body.scrollTop || document.documentElement.scrollTop || window.pageYOffset || 0
         let scrollHeight = document.body.scrollHeight || document.documentElement.scrollTop
 
-        if (scrollTop + clientHeight >= scrollHeight - 50) {
-
+        if (clientHeight < scrollHeight && scrollTop > 0) {
             let timestamp = new Date().getTime()
 
             list.map((val) => {
 
-                if (val.timestamp && timestamp - val.timestamp < 1000) {
-                    return
-                }
+                // if (val.timestamp && timestamp - val.timestamp < 1000) {
+                //     return
+                // }
 
                 val.timestamp = timestamp
-                val.callback()
+                val.callback(scrollTop)
             })
         }
     }
@@ -43,7 +42,7 @@
         window.addEventListener('resize', resize, false)
     }
 
-    window.ArriveFooter = {
+    window.ScrollListener = {
         add: (name, fn) => {
             list.push({
                 name: name,

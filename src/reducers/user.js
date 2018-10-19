@@ -14,7 +14,7 @@ export default function user(state = initialState, action = {}) {
   switch (action.type) {
 
     case 'ADD_ACCESS_TOKEN':
-      state.accessToken = action.access_token
+      state.accessToken = action.accessToken
       // state.expires = parseInt(action.expires)
       return merge({}, state, {})
 

@@ -32,14 +32,14 @@ const materialStyles = theme => ({
         marginRight: 'auto',
         maxWidth: theme.spacing.unit * 100,
         height: theme.spacing.unit * 6,
-        'justify-content': 'center',
-        'align-items': 'center',
-        'align-content': 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignContent: 'center',
         [theme.breakpoints.down('xs')]: {
             width: '90%',
-            'justify-content': 'space-between',
-            'margin-top': theme.spacing.unit,
-            'margin-bottom': theme.spacing.unit
+            justifyContent: 'space-between',
+            marginTop: theme.spacing.unit,
+            marginBottom: theme.spacing.unit
         }
     },
     navItemGroup: {
@@ -94,15 +94,17 @@ export class Head extends React.Component {
         super(props);
         let index = 0;
         switch(this.props.location.pathname) {
-            case '/': index =  0;
+            case '/follow': index =  0;
             break;
-            case '/zhiye': index =  1;
+            case '/': index =  1;
             break;
-            case '/jishu': index =  2;
+            case '/zhiye': index =  2;
             break;
-            case '/shenghuo': index =  3;
+            case '/jishu': index =  3;
             break;
-            case '/tangsuo': index =  4;
+            case '/shenghuo': index =  4;
+            break;
+            case '/tangsuo': index =  5;
             break;
             default: index =  0;
         }
@@ -115,18 +117,21 @@ export class Head extends React.Component {
         let path = '';
         switch(index) {
             case 0:
-                path = '/';
+                path = 'follow';
                 break;
             case 1:
-                path = 'zhiye';
+                path = '/';
                 break;
             case 2:
-                path = 'jishu';
+                path = 'zhiye';
                 break;
             case 3:
-                path = 'shenghuo';
+                path = 'jishu';
                 break;
             case 4:
+                path = 'shenghuo';
+                break;
+            case 5:
                 path = 'tangsuo';
                 break;
             default:

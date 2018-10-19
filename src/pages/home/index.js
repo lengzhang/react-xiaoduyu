@@ -6,7 +6,7 @@ import {loadPostsList} from '../../actions/posts';
 // http://blog.csdn.net/ISaiSai/article/details/78094556
 import {withRouter} from 'react-router-dom';
 
-//import PostsList from '../../components/posts/list';
+import PostsList from '../../components/posts/list';
 
 // 壳组件
 import Shell from '../../components/shell';
@@ -18,6 +18,26 @@ let generalArgs = {
     weaken: false,
 };
 
+// material-ui
+import {withStyles} from '@material-ui/core/styles';
+
+const materialStyles = theme => ({
+    root: {
+        paddingTop: theme.spacing.unit*11,
+        paddingBottom: theme.spacing.unit*11,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignContent: 'center',
+        [theme.breakpoints.down('xs')]: {
+            paddingTop: theme.spacing.unit*17,
+            paddingBottom: theme.spacing.unit*17,
+        }
+    }
+});
+
+@withStyles(materialStyles)
 @withRouter
 export class Home extends React.Component {
 
@@ -33,9 +53,14 @@ export class Home extends React.Component {
             * 这里对应的组件是 PostsList，PostsList组件里面也有 loadPostsList 方法，但它是在客户端执行。
             * 然后，服务端在渲染 PostsList 组件的时候，我们会先判断如果redux中，是否存在该条数据，如果存在，直接拿该数据渲染
             */
+
             await loadPostsList({ id: 'home', args: generalArgs })(store.dispatch, store.getState);
             resolve({code: 200});
         })
+    }
+
+    static propTypes = {
+        classes: PropTypes.object.isRequired,
     }
 
     constructor(props) {
@@ -43,12 +68,13 @@ export class Home extends React.Component {
     }
 
     render() {
+        const { classes } = this.props;
         return (
-            <div>
+            <div className={classes.root}>
 
                 <Meta title="首页"/>
 
-                首页
+                <PostsList id='home' args={generalArgs} />
 
             </div>
         )
