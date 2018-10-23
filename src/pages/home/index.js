@@ -12,32 +12,14 @@ import PostsList from '../../components/posts/list';
 import Shell from '../../components/shell';
 import Meta from '../../components/meta';
 
-let generalArgs = {
-    sort_by: "sort_by_date",
-    deleted: false,
-    weaken: false,
-};
-
-// material-ui
-import {withStyles} from '@material-ui/core/styles';
-
-const materialStyles = theme => ({
-    root: {
-        paddingTop: theme.spacing.unit*11,
-        paddingBottom: theme.spacing.unit*11,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignContent: 'center',
-        [theme.breakpoints.down('xs')]: {
-            paddingTop: theme.spacing.unit*17,
-            paddingBottom: theme.spacing.unit*17,
-        }
+let general = {
+    variables: {
+        sort_by: "sort_by_date",
+        deleted: false,
+        weaken: false
     }
-});
+}
 
-@withStyles(materialStyles)
 @withRouter
 export class Home extends React.Component {
 
@@ -54,13 +36,9 @@ export class Home extends React.Component {
             * 然后，服务端在渲染 PostsList 组件的时候，我们会先判断如果redux中，是否存在该条数据，如果存在，直接拿该数据渲染
             */
 
-            await loadPostsList({ id: 'home', args: generalArgs })(store.dispatch, store.getState);
+            await loadPostsList({id: 'home', filters: general})(store.dispatch, store.getState);
             resolve({code: 200});
         })
-    }
-
-    static propTypes = {
-        classes: PropTypes.object.isRequired,
     }
 
     constructor(props) {
@@ -68,18 +46,16 @@ export class Home extends React.Component {
     }
 
     render() {
-        const { classes } = this.props;
         return (
-            <div className={classes.root}>
+            <div>
 
                 <Meta title="首页"/>
 
-                <PostsList id='home' args={generalArgs} />
+                <PostsList id='home' filters={general} />
 
             </div>
         )
     }
-
 }
 
 export default Shell(Home);

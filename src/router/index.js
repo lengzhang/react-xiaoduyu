@@ -50,6 +50,13 @@ export default(user = null) => {
             }),
             enter: triggerEnter
         }, {
+            path: '/posts/:id',
+            head: Head,
+            component: asyncRouteComponent({
+                loader: () => import ('../pages/posts-detail')
+            }),
+            enter: triggerEnter
+        }, {
             path: '**',
             head: Head,
             component: asyncRouteComponent({

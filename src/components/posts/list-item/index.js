@@ -6,6 +6,7 @@ import classNames from 'classnames';
 
 import LikeButton from '../../like-button';
 import FollowButton from '../../follow-button';
+import ShareButton from '../../share-button';
 
 // material-ui
 import {withStyles} from '@material-ui/core/styles';
@@ -85,7 +86,7 @@ export class PostsListItem extends React.Component {
                     />
                 <CardContent className={classes.cardContent}>
                     <Link to={`/posts/${posts._id}`}>
-                        <Grid container spacing={8} direction='column' justify='space-between'>
+                        <Grid container spacing={16} direction='column' justify='space-between'>
                             <Grid item><h3>{posts.title}</h3></Grid>
                             <Grid item><p>{posts.content_summary}</p></Grid>
                         </Grid>
@@ -95,6 +96,7 @@ export class PostsListItem extends React.Component {
                     <Grid container spacing={8} direction='row' justify='flex-end'>
                         <Grid item><LikeButton posts={posts} /></Grid>
                         <Grid item><FollowButton posts={posts} /></Grid>
+                        <Grid item><ShareButton posts={posts} /></Grid>
                     </Grid>
                 </CardActions>
             </Card>

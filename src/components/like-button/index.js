@@ -6,6 +6,9 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
 import { like, unlike } from '../../actions/like';
+import { isMember } from '../../reducers/user';
+
+import MessageBar from '../global/message-bar';
 
 import classNames from 'classnames';
 
@@ -23,7 +26,9 @@ const materialStyles = theme => ({
 });
 
 @connect(
-    (state, props) => ({ }),
+    (state, props) => ({
+        isMember: isMember(state),
+    }),
     dispatch => ({
         like: bindActionCreators(like, dispatch),
         unlike: bindActionCreators(unlike, dispatch),
@@ -45,9 +50,18 @@ export class LikeButton extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            open: false,
+            msg: '',
+            variant: 'error',
+        }
     }
 
     handleLike = async () => {
+        if (!this.props.isMember) {
+            this.msgOpen('请先登录', 'warning');
+            return;
+        }
         const { like, unlike } = this.props;
         const { posts, comment, reply } = this.props;
         const target = posts || comment || reply;
@@ -68,21 +82,62 @@ export class LikeButton extends React.Component {
                 mood: 1
             });
         }
-        console.log(err, res);
+
+        if (err) {
+            this.msgOpen(err, 'error');
+        }
+    }
+
+    msgOpen = (msg, variant) => {
+        this.setState({
+            open: true,
+            msg,
+            variant
+        })
+    }
+
+    msgClose = () => {
+        this.setState({
+            open: false,
+        })
     }
 
     render() {
-        const { classes, posts, comment, reply } = this.props;
+        const { classes, isMember, posts, comment, reply } = this.props;
         const target = posts || comment || reply;
 
+        const { open, msg, variant } = this.state;
+
         return (
-            <Tooltip title={target.like ? '取消点赞' : '点赞'} placement='bottom' disableTouchListener={true}>
-                <IconButton aria-label="Like" onClick={this.handleLike}>
-                    <ThumbUp color={target.like ? 'secondary' : 'inherit'}/>
-                </IconButton>
-            </Tooltip>
+            <div>
+                <Tooltip title={target.like ? '取消点赞' : '点赞'} placement='bottom' disableTouchListener={true}>
+                    <div>
+                        <IconButton aria-label="Like" onClick={this.handleLike}>
+                            <ThumbUp color={target.like ? 'secondary' : 'inherit'}/>
+                        </IconButton>
+                    </div>
+                </Tooltip>
+                <MessageBar
+                    open={open}
+                    message={msg}
+                    onClose={this.msgClose}
+                    vertical='top'
+                    horizontal='right'
+                    variant={variant}
+                    />
+            </div>
         )
     }
 }
 
+/*
+
+open: PropTypes.bool.isRequired,
+message: PropTypes.string.isRequired,
+onClose: PropTypes.func.isRequired,
+vertical: PropTypes.oneOf(['top', 'center', 'bottom']),
+horizontal: PropTypes.oneOf(['left', 'center', 'right']),
+autoHideDuration: PropTypes.number,
+variant: PropTypes.oneOf(['success', 'error', 'info', 'warning']),
+*/
 export default LikeButton;

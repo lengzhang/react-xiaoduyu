@@ -6,6 +6,9 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
 import { follow, unfollow } from '../../actions/follow';
+import { isMember } from '../../reducers/user';
+
+import MessageBar from '../global/message-bar';
 
 import classNames from 'classnames';
 
@@ -23,7 +26,9 @@ const materialStyles = theme => ({
 });
 
 @connect(
-    (state, props) => ({ }),
+    (state, props) => ({
+        isMember: isMember(state),
+    }),
     dispatch => ({
         follow: bindActionCreators(follow, dispatch),
         unfollow: bindActionCreators(unfollow, dispatch),
@@ -45,9 +50,19 @@ export class FollowButton extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            open: false,
+            msg: '',
+            variant: 'error',
+        }
     }
 
     handleFollow = (status) => async () => {
+        if (!this.props.isMember) {
+            this.msgOpen('请先登录', 'warning');
+            return;
+        }
+
         const { posts, user, topic } = this.props;
 
         let args = {};
@@ -61,47 +76,44 @@ export class FollowButton extends React.Component {
         else {
             await this.props.follow({ args });
         }
+    }
 
-        /*
+    msgOpen = (msg, variant) => {
+        this.setState({
+            open: true,
+            msg,
+            variant
+        })
+    }
 
-            const { follow, posts, user, topic  } = this.props
-
-            let args = {};
-            if (posts) args.posts_id = posts._id;
-            if (user) args.user_id = user._id;
-            if (topic) args.topic_id = topic._id;
-
-            await follow({ args });
-        */
-
-        let err, res;
-
-        // if (target.like) {
-        //     [ err, res ] = await unlike({
-        //         type: type,
-        //         target_id: target._id
-        //     });
-        // }
-        // else {
-        //     [ err, res ] = await like({
-        //         type: type,
-        //         target_id: target._id,
-        //         mood: 1
-        //     });
-        // }
-        console.log(err, res);
+    msgClose = () => {
+        this.setState({
+            open: false,
+        })
     }
 
     render() {
         const { classes, posts, comment, reply } = this.props;
         const target = posts || user || topic;
 
+        const { open, msg, variant } = this.state;
+
         return (
-            <Tooltip title={target.follow ? '取消关注' : '关注'} placement='bottom' disableTouchListener={true}>
-                <IconButton aria-label="Like" onClick={this.handleFollow(target.follow)}>
-                    <StarIcon color={target.follow ? 'secondary' : 'inherit'}/>
-                </IconButton>
-            </Tooltip>
+            <div>
+                <Tooltip title={target.follow ? '取消关注' : '关注'} placement='bottom' disableTouchListener={true}>
+                    <IconButton aria-label="Follow" onClick={this.handleFollow(target.follow)}>
+                        <StarIcon color={target.follow ? 'secondary' : 'inherit'}/>
+                    </IconButton>
+                </Tooltip>
+                <MessageBar
+                    open={open}
+                    message={msg}
+                    onClose={this.msgClose}
+                    vertical='top'
+                    horizontal='right'
+                    variant={variant}
+                    />
+            </div>
         )
     }
 }

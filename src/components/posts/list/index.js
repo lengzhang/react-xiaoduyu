@@ -7,7 +7,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
 import { loadPostsList } from '../../../actions/posts';
-import { getPostsListByName } from '../../../reducers/posts';
+import { getPostsListByListId } from '../../../reducers/posts';
 
 import Loading from '../../ui/loading';
 import PostsListItem from '../list-item';
@@ -31,9 +31,9 @@ const materialStyles = theme => ({
 
 @connect(
     (state, props) => ({
-        postsList: getPostsListByName(state, props.id)
+        postsList: getPostsListByListId(state, props.id)
     }),
-    dispatch => ({
+    (dispatch) => ({
         loadPostsList: bindActionCreators(loadPostsList, dispatch)
     })
 )
@@ -43,7 +43,7 @@ export class PostsList extends React.Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
         id: PropTypes.string.isRequired,
-        args: PropTypes.object.isRequired,
+        filters: PropTypes.object.isRequired,
     }
 
     static defaultProps = {
@@ -55,16 +55,13 @@ export class PostsList extends React.Component {
     }
 
     async componentDidMount() {
-        const { id, args, postsList, loadPostsList } = this.props;
-        if (!postsList.data) {
+        const { id, filters, postsList, loadPostsList } = this.props;
 
-            console.log('id', id);
-            console.log('args', args);
-            console.log('postsList', postsList);
-            await loadPostsList({ id, args });
+        if (!postsList || !postsList.data) {
+            await loadPostsList({ id, filters });
         }
         ArriveFooter.add(id, async () => {
-            await loadPostsList({ id, args });
+            await loadPostsList({ id, filters });
         })
     }
 
@@ -75,18 +72,24 @@ export class PostsList extends React.Component {
     render() {
         const { classes, postsList } = this.props;
 
+        const { data, loading, more } = postsList;
+
+        if (!loading && data && data.length == 0 && !mroe) {
+            return <div>没有查询到结果</div>
+        }
+
         return (
             <div className={classes.root}>
                 <Grid container spacing={24} direction='column' justify='center'>
                     {
-                        postsList.data.map((item, index) => (
+                        data && data.map((item, index) => (
                             <Grid item key={index}>
                                 <PostsListItem posts={item} />
                             </Grid>
                         ))
                     }
                 </Grid>
-                {postsList.loading ? <Loading /> : null}
+                {loading ? <Loading /> : null}
             </div>
         )
     }
