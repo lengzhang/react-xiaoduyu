@@ -64,7 +64,7 @@ export class ScrollTopButton extends React.Component {
 
         return (
             <div className={classes.root}>
-                <Fade in={scrollTop > 100}>
+                <Fade in={scrollTop > 500}>
                     <Button variant="fab" mini onClick={this.onClick}>
                         <TopIcon />
                     </Button>

@@ -1,8 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import classNames from 'classnames';
+
+import HTMLText from '../../html-text';
 
 import LikeButton from '../../like-button';
 import FollowButton from '../../follow-button';
@@ -36,7 +37,7 @@ const materialStyles = theme => ({
 });
 
 @withStyles(materialStyles)
-export class PostsListItem extends React.Component {
+export class DetailBlock extends React.Component {
 
     static propTypes = {
         classes: PropTypes.object.isRequired,
@@ -87,12 +88,10 @@ export class PostsListItem extends React.Component {
                     }
                     />
                 <CardContent className={classes.cardContent}>
-                    <Link to={`/posts/${posts._id}`}>
-                        <Grid container spacing={16} direction='column' justify='space-between'>
-                            <Grid item><h3>{posts.title}</h3></Grid>
-                            <Grid item><p>{posts.content_summary}</p></Grid>
-                        </Grid>
-                    </Link>
+                    <Grid container spacing={16} direction='column' justify='space-between'>
+                        <Grid item><h3>{posts.title}</h3></Grid>
+                        <Grid item><HTMLText content={posts.content_html}/></Grid>
+                    </Grid>
                 </CardContent>
                 <CardActions className={classes.cardActions}>
                     <Grid container spacing={8} direction='row' justify='flex-end'>
@@ -106,4 +105,4 @@ export class PostsListItem extends React.Component {
     }
 }
 
-export default PostsListItem;
+export default DetailBlock;

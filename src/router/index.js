@@ -6,7 +6,6 @@ import {Route, Switch, Redirect} from 'react-router-dom';
 import {asyncRouteComponent} from '../components/generateAsyncComponent.js';
 
 import Head from '../components/head';
-import ScollTopButton from '../components/scoll-top-button';
 
 /**
  * 创建路由
@@ -81,7 +80,6 @@ export default(user = null) => {
                 })
             }
         </Switch>
-        <ScollTopButton />
     </div>)
 
     return {list: routeArr, dom: router}

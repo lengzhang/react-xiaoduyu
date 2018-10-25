@@ -20,6 +20,26 @@ let general = {
     }
 }
 
+// material-ui
+import {withStyles} from '@material-ui/core/styles';
+
+const materialStyles = theme => ({
+    root: {
+        paddingTop: theme.spacing.unit*11,
+        paddingBottom: theme.spacing.unit*11,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignContent: 'center',
+        [theme.breakpoints.down('xs')]: {
+            paddingTop: theme.spacing.unit*17,
+            paddingBottom: theme.spacing.unit*17,
+        }
+    }
+});
+
+@withStyles(materialStyles)
 @withRouter
 export class Home extends React.Component {
 
@@ -47,7 +67,7 @@ export class Home extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className={this.props.classes.root}>
 
                 <Meta title="首页"/>
 

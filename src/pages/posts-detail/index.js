@@ -10,23 +10,35 @@ import {connect} from 'react-redux';
 import {loadPostsList} from '../../actions/posts';
 import { getPostsListByListId } from '../../reducers/posts';
 
-import { loadCommentList } from '../../actions/comments';
-import { getCommentListById } from '../../reducers/comments';
-
 // http://blog.csdn.net/ISaiSai/article/details/78094556
 import {withRouter} from 'react-router-dom';
 
-//import PostsDetailBlock from '../../components/posts/detail';
+import PostsDetailBlock from '../../components/posts/detail';
+import Loading from '../../components/ui/loading';
 
 // 壳组件
 import Shell from '../../components/shell';
 import Meta from '../../components/meta';
 
-let generalArgs = {
-    sort_by: "sort_by_date",
-    deleted: false,
-    weaken: false,
-};
+
+// material-ui
+import {withStyles} from '@material-ui/core/styles';
+
+const materialStyles = theme => ({
+    root: {
+        paddingTop: theme.spacing.unit*11,
+        paddingBottom: theme.spacing.unit*11,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignContent: 'center',
+        [theme.breakpoints.down('xs')]: {
+            paddingTop: theme.spacing.unit*17,
+            paddingBottom: theme.spacing.unit*17,
+        }
+    }
+});
 
 @connect(
     (state, props) => ({
@@ -36,6 +48,7 @@ let generalArgs = {
         loadPostsList: bindActionCreators(loadPostsList, dispatch),
     })
 )
+@withStyles(materialStyles)
 @withRouter
 export class PostsDetail extends React.Component {
 
@@ -65,6 +78,7 @@ export class PostsDetail extends React.Component {
             })(store.dispatch, store.getState);
 
             if (data && data.data && data.data.length > 0) {
+
                 resolve({ code: 200})
             }
             else {
@@ -80,7 +94,6 @@ export class PostsDetail extends React.Component {
     async componentDidMount() {
         const { filters, posts, loadPostsList } = this.props;
         const { id } = this.props.match.params;
-        console.log(posts);
 
         let err, data;
 
@@ -96,19 +109,34 @@ export class PostsDetail extends React.Component {
             })
         }
 
-        console.log('data', data);
         if (data && data.data && !data.data[0]) {
             this.props.notFoundPage('该帖子不存在');
         }
     }
 
     render() {
+        const { classes } = this.props;
+        const { loading, data } = this.props.posts || {};
+        const posts = data && data[0] ? data[0] : null;
+
+        if (loading || !posts) return (<Loading />);
+
         return (
-            <div>
+            <div className={classes.root}>
 
-                <Meta title="首页"/>
+                <Meta title={posts.title}>
+                    <meta name="description" content={`${posts.topic_id.name} - ${posts.user_id.nickname} - ${posts.content_summary}`} />
+                    <link rel="canonical" href={`${domain_name}/posts/${posts._id}`} />
 
-                <div>PostsDetail</div>
+                    <meta property="og:locale" content="zh_CN" />
+                    <meta property="og:type" content="article" />
+                    <meta property="og:title" content={posts.title} />
+                    <meta property="og:description" content={`${posts.topic_id.name} - ${posts.user_id.nickname} - ${posts.content_summary}`} />
+                    <meta property="og:url" content={`${domain_name}/posts/${posts._id}`} />
+                    <meta property="og:site_name" content={name} />
+                </Meta>
+
+                <PostsDetailBlock posts={posts}/>
 
             </div>
         )

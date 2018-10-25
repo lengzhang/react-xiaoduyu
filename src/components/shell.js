@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 
 import parseUrl from '../common/parse-url';
 
+
+import ScollTopButton from '../components/global/scoll-top-button';
+
 // 壳组件，用于给页面组件，套一个外壳
 // 这样可以通过壳组件，给每个页面，传递参数
 
@@ -84,23 +87,24 @@ const Shell = (Component) => {
             const self = this;
             const {notFoundPage} = this.state;
 
-            return (<div className={this.props.classes.root}>
-                {
-                    notFoundPage
-                        ?
-                        <div>{notFoundPage}</div>
-                        :
-                        <Component
-                            {...this.props}
-                            notFoundPage={
-                                (content) => {
-                                    self.setState({
-                                        notFoundPage: content || '404 NOT FOUND'
-                                    });
-                                }
-                            }/>
-                }
-            </div>)
+            return (
+                notFoundPage
+                ?
+                <div className={this.props.classes.root}>{notFoundPage}</div>
+                :
+                <div>
+                    <Component
+                        {...this.props}
+                        notFoundPage={
+                            (content) => {
+                                self.setState({
+                                    notFoundPage: content || '404 NOT FOUND'
+                                });
+                            }
+                        }/>
+                    <ScollTopButton />
+                </div>
+            )
         }
     }
 

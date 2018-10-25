@@ -3,14 +3,14 @@ import { combineReducers } from 'redux';
 import merge from 'lodash/merge';
 
 import captcha from './captcha';
-import comments from './comments';
+import comment from './comment';
 import countries from './countries';
 import posts from './posts';
 import user from './user';
 
 let states = {
     captcha,
-    comments,
+    comment,
     countries,
     posts,
     user,

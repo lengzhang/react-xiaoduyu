@@ -106,7 +106,7 @@ export class Head extends React.Component {
             break;
             case '/tangsuo': index =  5;
             break;
-            default: index =  0;
+            default: index =  -1;
         }
         this.state = {
             pathIndex: index
@@ -166,57 +166,59 @@ export class Head extends React.Component {
             }
         ]
 
-        const navItem = (<Grid container spacing={8} className={classes.navItemGroup}>
-            {
-                navItemsArr.map((item, index) => {
-                    return (<Grid item key={index}>
-                        <NavLink to={item.path}>
-                            <div className={this.state.pathIndex == index
-                                    ? classes.currentPath
-                                    : ""}>
-                                {item.title}
-                            </div>
-                        </NavLink>
-                    </Grid>)
-                })
-            }
-        </Grid>)
+        const navItem = (
+            <Grid container spacing={8} className={classes.navItemGroup}>
+                {
+                    navItemsArr.map((item, index) => {
+                        return (<Grid item key={index}>
+                            <NavLink to={item.path}>
+                                <div className={this.state.pathIndex == index
+                                        ? classes.currentPath
+                                        : ""}>
+                                    {item.title}
+                                </div>
+                            </NavLink>
+                        </Grid>)
+                    })
+                }
+            </Grid>
+        )
 
-        return (<header>
-            <AppBar position="fixed" className={classes.appBar}>
-                <Grid container className={classes.container}>
-                    <Grid item className={classes.navItem}>
-                        <NavLink to="/">
-                            <h3>小度鱼</h3>
-                        </NavLink>
-                    </Grid>
-                    <Hidden xsDown>
-                        <Grid item>
-                            {navItem}
+        return (
+            <header>
+                <AppBar position="fixed" className={classes.appBar}>
+                    <Grid container className={classes.container}>
+                        <Grid item className={classes.navItem}>
+                            <NavLink to="/">
+                                <h3>小度鱼</h3>
+                            </NavLink>
                         </Grid>
+                        <Hidden xsDown>
+                            <Grid item>
+                                {navItem}
+                            </Grid>
+                        </Hidden>
+                        <Grid item className={classes.sections}>
+                            <Grid container spacing={16} justify="center" alignItems="baseline" alignContent="center">
+                                <Grid item><SearchSection /></Grid>
+                                <Grid item><UserAvatar /></Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                    <Hidden smUp>
+                        <Tabs value={this.state.pathIndex} onChange={this.handleTabs} indicatorColor="primary" textColor="primary">
+                            {
+                                navItemsArr.map((item, index) => {
+                                    return (<Tab key={index} label={item.title}/>)
+                                })
+                            }
+                        </Tabs>
                     </Hidden>
-                    <Grid item className={classes.sections}>
-                        <Grid container spacing={16} justify="center" alignItems="baseline" alignContent="center">
-                            <Grid item><SearchSection /></Grid>
-                            <Grid item><UserAvatar /></Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
-
-                <Hidden smUp>
-                    <Tabs value={this.state.pathIndex} onChange={this.handleTabs} indicatorColor="primary" textColor="primary">
-                        {
-                            navItemsArr.map((item, index) => {
-                                return (<Tab key={index} label={item.title}/>)
-                            })
-                        }
-                    </Tabs>
-                </Hidden>
-            </AppBar>
-        </header>)
-
+                </AppBar>
+            </header>
+        )
     }
-
 }
 
 export default Head;

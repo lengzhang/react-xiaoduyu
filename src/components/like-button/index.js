@@ -113,7 +113,7 @@ export class LikeButton extends React.Component {
                 <Tooltip title={target.like ? '取消点赞' : '点赞'} placement='bottom' disableTouchListener={true}>
                     <div>
                         <IconButton aria-label="Like" onClick={this.handleLike}>
-                            <ThumbUp color={target.like ? 'secondary' : 'inherit'}/>
+                            <ThumbUp fontSize="small" color={target.like ? 'secondary' : 'inherit'}/>
                         </IconButton>
                     </div>
                 </Tooltip>

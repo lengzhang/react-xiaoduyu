@@ -33,6 +33,8 @@ const materialStyles = theme => ({
     },
     avatar: {
         magin: theme.spacing.unit,
+        width: theme.spacing.unit*5,
+        height: theme.spacing.unit*5,
     },
 });
 

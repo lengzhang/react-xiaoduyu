@@ -102,7 +102,7 @@ export class FollowButton extends React.Component {
             <div>
                 <Tooltip title={target.follow ? '取消关注' : '关注'} placement='bottom' disableTouchListener={true}>
                     <IconButton aria-label="Follow" onClick={this.handleFollow(target.follow)}>
-                        <StarIcon color={target.follow ? 'secondary' : 'inherit'}/>
+                        <StarIcon fontSize="small" color={target.follow ? 'secondary' : 'inherit'}/>
                     </IconButton>
                 </Tooltip>
                 <MessageBar

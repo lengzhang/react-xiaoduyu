@@ -92,14 +92,16 @@ export class ShareButton extends React.Component {
     }
 
     shareToWeiXin = () => {
-        console.log(this.handleShowQRCode(true));
-        if (weixin.in) {
-            this.setState({
-                displayTips: true,
-            })
-        } else {
-            this.handleShowQRCode(true);
-        }
+        // if (weixin.in) {
+        //     this.setState({
+        //         displayTips: true,
+        //     })
+        // } else {
+        //
+        // }
+        this.setState({
+            showQRCode: true,
+        })
     }
 
     handleDisplayTips = (displayTips) => () => {
@@ -109,7 +111,6 @@ export class ShareButton extends React.Component {
     }
 
     handleShowQRCode = (showQRCode) => () => {
-        console.log('in', showQRCode);
         this.setState({
             showQRCode,
         })
@@ -129,7 +130,7 @@ export class ShareButton extends React.Component {
                         buttonRef={(node)=>{this.anchorEl = node;}}
                         >
                         <IconButton aria-label="Share" onClick={this.handlePopover(true)}>
-                            <ShareIcon />
+                            <ShareIcon fontSize="small" />
                         </IconButton>
                     </Tooltip>
                     <Popover
@@ -158,7 +159,6 @@ export class ShareButton extends React.Component {
                 </div>
                 <Dialog
                     open={showQRCode}
-                    keepMounted
                     onClose={this.handleShowQRCode(false)}
                     >
                     <DialogContent>
